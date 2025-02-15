@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 
 public class Concurrency {
 
-    private static final boolean ENABLE_VIRTUAL_THREADS = true;
+    private static final boolean ENABLE_VIRTUAL_THREADS = false;
 
     public static void main(String[] args) {
         ExecutorService executorService =
@@ -27,12 +27,29 @@ public class Concurrency {
 
         int[] numbers = {1, 2, 3, 4};
 
-        String collect = Stream.of(a, b)
-                // .join blokuje aktualne vlakno pokial Future nie je dokoncena a vrati vysledok
+        int[] partOne = {numbers[0], numbers[1]};
+        int[] partTwo = {numbers[2], numbers[3]};
+        CompletableFuture<Integer> p1 = CompletableFuture.supplyAsync(() -> {
+            return partOne[0] + partOne[1];
+        }, executorService);
+        CompletableFuture<Integer> p2 = CompletableFuture.supplyAsync(() -> {
+            return partTwo[0] + partTwo[1];
+        }, executorService);
+
+        int sum = Stream.of(p1, p2)
                 .map(CompletableFuture::join)
-                .collect(Collectors.joining());
-        System.out.println("Got result in thread: " + Thread.currentThread().getName());
-        System.out.println(collect);
+                .mapToInt(Integer::intValue)
+                .sum();
+
+        System.out.println(sum);
+
+
+//        String collect = Stream.of(a, b)
+//                 .join blokuje aktualne vlakno pokial Future nie je dokoncena a vrati vysledok
+//                .map(stringCompletableFuture -> stringCompletableFuture.join())
+//                .collect(Collectors.joining());
+//        System.out.println("Got result in thread: " + Thread.currentThread().getName());
+//        System.out.println(collect);
 
         executorService.close();
 

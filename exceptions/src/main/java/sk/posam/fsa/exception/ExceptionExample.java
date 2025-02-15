@@ -1,5 +1,7 @@
 package sk.posam.fsa.exception;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.*;
 
 public class ExceptionExample {
@@ -16,8 +18,28 @@ public class ExceptionExample {
         COURSE_REGISTRATION.put(Course.PHYSICS, new ArrayList<>());
     }
 
+    static class Trieda implements Closeable {
 
-    public static void main(String[] args) {
+        public void nieco() {
+            System.out.println("Nieco");
+        }
+
+        @Override
+        public void close() throws IOException {
+            System.out.println("Volam close()");
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        Trieda t = new Trieda();
+        try {
+            t.nieco();
+        } catch (Exception e) {
+
+        } finally {
+            t.close();
+        }
+
 
         try {
             registerStudent(Course.MATH, "Alice");

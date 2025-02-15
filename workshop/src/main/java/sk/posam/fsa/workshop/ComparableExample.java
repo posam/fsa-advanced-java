@@ -3,9 +3,9 @@ package sk.posam.fsa.workshop;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Main {
+public class ComparableExample {
 
-    record AgendaItem(String name, int order) implements Comparable<AgendaItem> {
+    record AgendaItem(String name, int order) implements java.lang.Comparable<AgendaItem> {
         @Override
         public int compareTo(AgendaItem o) {
             if (order == o.order) {

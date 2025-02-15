@@ -6,6 +6,7 @@ import sk.posam.fsa.order.OrderStatus;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class Streams {
 
@@ -16,10 +17,16 @@ public class Streams {
         Optional<Integer> sum = integers.stream()
                 .filter(i -> i % 2 == 0)
                 .map(i -> i * 3)
+//                 .collect(Collectors.toList())
+//                 .toList();
                 .reduce(Integer::sum);
-        if (sum.isPresent()) {
+
+        Integer sumInt = sum
+                .orElseThrow(() -> new IllegalStateException("neexistuje"));
+
+//        if (sum.isPresent()) {
             System.out.println(sum.get());
-        }
+//        }
 
 
         List<Order> orders = List.of(new Order(OrderStatus.PROCESSED, BigDecimal.ONE), new Order(OrderStatus.UNPROCESSED, BigDecimal.TWO), new Order(OrderStatus.PROCESSED, BigDecimal.TEN));
